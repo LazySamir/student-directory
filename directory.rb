@@ -11,6 +11,7 @@ def print_menu
 	puts "1. Input the students"
 	puts "2. Show the students"
 	puts "3. Save the list to students.csv"
+	puts "4. Load the list from students.csv"
 	puts "9. Exit"
 end
 
@@ -28,6 +29,8 @@ def process(selection)
 			show_students
 		when "3"
 			save_students
+		when "4"
+			load_students
 		when "9"
 			exit
 		else 
@@ -41,25 +44,10 @@ def input_students
 	name = gets.chomp
 
 	while !name.empty? do
-		puts "What are their hobbies"
-		hobbies = gets.chomp
-		
-		puts "What country are they from"
-		country = gets.chomp
-		
-		puts "How tall are they in cm"
-		height = gets.chomp
-		
-		puts "What date cohort are they in"
+		puts "What cohort are they"
 		cohort = gets.chomp
 
-			@students << {
-				name: name, 
-				hobbies: hobbies,
-				country: country,
-				height: height,
-				cohort: cohort.to_s
-			}
+			@students << {name: name, cohort: cohort}
 
 		if @students.count == 1
 	  	puts "Now we have #{@students.count} student"
@@ -79,7 +67,7 @@ end
 
 def print_student_list
 	@students.each_with_index do |student, index|
-	 	puts "#{index + 1}. #{student[:name]}, #{student[:cohort]} cohort : #{student[:height]}cm".center(100)
+	 	puts "#{index + 1}. #{student[:name]}, #{student[:cohort]} cohort".center(100)
 	end
 end
 
@@ -97,6 +85,15 @@ def save_students
 		student_data = [student[:name], student[:cohort]]
 		csv_line = student_data.join(",")
 		file.puts csv_line
+	end
+	file.close
+end
+
+def load_students
+	file = File.open("students.csv", "r")
+	file.readlines.each do |line|
+	name, cohort = line.chomp.split(',')
+		@students << {name: name, cohort: cohort}
 	end
 	file.close
 end
